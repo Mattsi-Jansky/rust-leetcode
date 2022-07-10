@@ -5,6 +5,10 @@ pub fn max_sub_array(nums: Vec<i32>) -> i32 {
     
     loop {
         let new_total = sum(&nums, start, end);
+        if new_total < 0 {
+            end += 1;
+            start = end;
+        }
         if new_total > total { total = new_total; }
         end += 1;
         if end == nums.len() { break; }
@@ -30,6 +34,24 @@ mod tests {
     #[test]
     fn calculates_total() {
         let input = vec![1,1];
+
+        let result = max_sub_array(input);
+
+        assert_eq!(2, result);
+    }
+
+    #[test]
+    fn calculates_total_ignoring_last_negative() {
+        let input = vec![1,1,-1];
+
+        let result = max_sub_array(input);
+
+        assert_eq!(2, result);
+    }
+
+    #[test]
+    fn calculates_total_ignoring_first_negative() {
+        let input = vec![-1,1,1,-1];
 
         let result = max_sub_array(input);
 

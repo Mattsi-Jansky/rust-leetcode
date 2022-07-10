@@ -1,27 +1,27 @@
 pub fn max_sub_array(nums: Vec<i32>) -> i32 {
     let mut start = 0;
     let mut end = 0;
-    let mut total = 0;
+    let mut total = nums[0];
     
-    loop {
+    while end != nums.len() && nums.len() != 1 {
         let new_total = sum(&nums, start, end);
         if new_total < 0 {
             end += 1;
             start = end;
+            continue;
         }
-        if new_total > total { total = new_total; }
+        else if new_total > total { total = new_total; }
         end += 1;
-        if end == nums.len() { break; }
     }
     
     total
 }
 
-fn sum(numbs: &Vec<i32>, start: usize, end: usize) -> i32 {
+fn sum(nums: &Vec<i32>, start: usize, end: usize) -> i32 {
     let mut total = 0;
 
     for i in start..=end {
-        total += numbs[i];
+        total += nums[i];
     }
 
     total
@@ -56,6 +56,24 @@ mod tests {
         let result = max_sub_array(input);
 
         assert_eq!(2, result);
+    }
+
+    #[test]
+    fn single_negative_number() {
+        let input = vec![-1];
+
+        let result = max_sub_array(input);
+
+        assert_eq!(-1, result);
+    }
+
+    #[test]
+    fn two_one_of_which_is_negative() {
+        let input = vec![-2,1];
+
+        let result = max_sub_array(input);
+
+        assert_eq!(1, result);
     }
     
     #[test]

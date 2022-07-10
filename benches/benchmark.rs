@@ -8,3 +8,8 @@ fn criterion_benchmark(c: &mut Criterion) {
 
 criterion_group!(benches, criterion_benchmark);
 criterion_main!(benches);
+
+fib 20                  time:   [1.1181 s 1.1205 s 1.1229 s]
+Found 2 outliers among 100 measurements (2.00%)
+1 (1.00%) low mild
+1 (1.00%) high mild

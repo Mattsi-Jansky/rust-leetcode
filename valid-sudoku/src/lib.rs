@@ -9,22 +9,30 @@ impl Solution {
     pub fn is_valid_sudoku(board: Vec<Vec<char>>) -> bool {
         let mut rows = HashMap::new();
         let mut columns = HashMap::new();
-        let mut result = true;
+        let mut boxes = HashMap::new();
 
         for (y, row) in board.iter().enumerate() {
             rows.insert(y, HashSet::new());
             for (x, cell) in row.iter().enumerate() {
                 if !columns.contains_key(&x) { columns.insert(x, HashSet::new()); }
-                if cell != &'.' && !rows.get_mut(&y).unwrap().insert(cell) {
-                    result = false;
-                }
-                if cell != &'.' && !columns.get_mut(&x).unwrap().insert(cell) {
-                    result = false;
+                let box_key =  x / 3 + ((y / 3)  * 3);
+                if !boxes.contains_key(&box_key) { boxes.insert(box_key, HashSet::new()); }
+
+                if cell != &'.' {
+                    if !rows.get_mut(&y).unwrap().insert(cell) {
+                        return false
+                    }
+                    if !columns.get_mut(&x).unwrap().insert(cell) {
+                        return false
+                    }
+                    if !boxes.get_mut(&box_key).unwrap().insert(cell) {
+                        return false
+                    }
                 }
             }
         }
 
-        result
+        return true
     }
 }
 
@@ -95,6 +103,23 @@ mod tests {
             vec!['.', '6', '.', '.', '.', '.', '2', '8', '.'],
             vec!['.', '.', '.', '4', '1', '9', '.', '.', '5'],
             vec!['.', '3', '.', '.', '.', '.', '.', '7', '9'],
+        ];
+
+        assert_eq!(false, Solution::is_valid_sudoku(input));
+    }
+
+    #[test]
+    fn given_duplicate_numbers_in_box_returns_false() {
+        let input = vec![
+            vec!['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+            vec!['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+            vec!['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+            vec!['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+            vec!['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+            vec!['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+            vec!['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+            vec!['.', '.', '.', '.', '.', '.', '.', '2', '.'],
+            vec!['.', '.', '.', '.', '.', '.', '.', '.', '2'],
         ];
 
         assert_eq!(false, Solution::is_valid_sudoku(input));

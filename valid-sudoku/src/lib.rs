@@ -13,13 +13,15 @@ impl Solution {
             let my_row = rows.entry(y).or_insert_with(HashSet::new);
             for (x, cell) in row.iter().enumerate() {
                 let column = columns.entry(x).or_insert_with(HashSet::new);
-                let box_key =  x / 3 + ((y / 3)  * 3);
-                let my_box = boxes.entry(box_key).or_insert_with(HashSet::new);
+                if cell != &'.' {
+                    let box_key =  x / 3 + ((y / 3)  * 3);
+                    let my_box = boxes.entry(box_key).or_insert_with(HashSet::new);
 
-                if cell != &'.' && (!my_row.insert(cell)
+                    if !my_row.insert(cell)
                         || !column.insert(cell)
-                        || !my_box.insert(cell)) {
-                    return false
+                        || !my_box.insert(cell) {
+                        return false
+                    }
                 }
             }
         }

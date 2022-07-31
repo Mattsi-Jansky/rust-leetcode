@@ -4,24 +4,26 @@ pub struct Solution {}
 
 impl Solution {
     //Using a ``Vec<Vec<char>>` is bad but this is the signiature leetcode uses, don't get a choice
-    pub fn is_valid_sudoku(board: &Vec<Vec<char>>) -> bool {
-        let mut rows = HashMap::new();
-        let mut columns = HashMap::new();
-        let mut boxes = HashMap::new();
+    pub fn is_valid_sudoku(board: Vec<Vec<char>>) -> bool {
+        let mut rows = [0; 9];
+        let mut columns = [0; 9];
+        let mut boxes = [0; 9];
 
         for (y, row) in board.iter().enumerate() {
-            let my_row = rows.entry(y).or_insert_with(HashSet::new);
             for (x, cell) in row.iter().enumerate() {
-                let column = columns.entry(x).or_insert_with(HashSet::new);
                 if cell != &'.' {
+                    let bit = 1 << cell.to_digit(10).unwrap();
                     let box_key =  x / 3 + ((y / 3)  * 3);
-                    let my_box = boxes.entry(box_key).or_insert_with(HashSet::new);
 
-                    if !my_row.insert(cell)
-                        || !column.insert(cell)
-                        || !my_box.insert(cell) {
+                    if rows[y] & bit != 0
+                        || columns[x] & bit != 0
+                        || boxes[box_key] & bit != 0 {
                         return false
                     }
+
+                    rows[y] |= bit;
+                    columns[x] |= bit;
+                    boxes[box_key] |= bit;
                 }
             }
         }

@@ -2,8 +2,6 @@ use std::collections::{HashMap, HashSet};
 
 pub struct Solution {}
 
-const ROW_LEN: u32 = 9;
-
 impl Solution {
     //Using a ``Vec<Vec<char>>` is bad but this is the signiature leetcode uses, don't get a choice
     pub fn is_valid_sudoku(board: &Vec<Vec<char>>) -> bool {
@@ -12,27 +10,21 @@ impl Solution {
         let mut boxes = HashMap::new();
 
         for (y, row) in board.iter().enumerate() {
-            rows.insert(y, HashSet::new());
+            let my_row = rows.entry(y).or_insert_with(HashSet::new);
             for (x, cell) in row.iter().enumerate() {
-                if !columns.contains_key(&x) { columns.insert(x, HashSet::new()); }
+                let column = columns.entry(x).or_insert_with(HashSet::new);
                 let box_key =  x / 3 + ((y / 3)  * 3);
-                if !boxes.contains_key(&box_key) { boxes.insert(box_key, HashSet::new()); }
+                let my_box = boxes.entry(box_key).or_insert_with(HashSet::new);
 
-                if cell != &'.' {
-                    if !rows.get_mut(&y).unwrap().insert(cell) {
-                        return false
-                    }
-                    if !columns.get_mut(&x).unwrap().insert(cell) {
-                        return false
-                    }
-                    if !boxes.get_mut(&box_key).unwrap().insert(cell) {
-                        return false
-                    }
+                if cell != &'.' && (!my_row.insert(cell)
+                        || !column.insert(cell)
+                        || !my_box.insert(cell)) {
+                    return false
                 }
             }
         }
 
-        return true
+        true
     }
 }
 

@@ -1,12 +1,12 @@
 use std::collections::{HashMap, HashSet};
 
-struct Solution {}
+pub struct Solution {}
 
 const ROW_LEN: u32 = 9;
 
 impl Solution {
     //Using a ``Vec<Vec<char>>` is bad but this is the signiature leetcode uses, don't get a choice
-    pub fn is_valid_sudoku(board: Vec<Vec<char>>) -> bool {
+    pub fn is_valid_sudoku(board: &Vec<Vec<char>>) -> bool {
         let mut rows = HashMap::new();
         let mut columns = HashMap::new();
         let mut boxes = HashMap::new();
@@ -54,7 +54,7 @@ mod tests {
             vec!['.', '.', '.', '.', '.', '.', '.', '.', '.'],
         ];
 
-        assert_eq!(true, Solution::is_valid_sudoku(input));
+        assert_eq!(true, Solution::is_valid_sudoku(&input));
     }
 
     #[test]
@@ -71,7 +71,24 @@ mod tests {
             vec!['.', '.', '.', '.', '8', '.', '.', '7', '9'],
         ];
 
-        assert_eq!(true, Solution::is_valid_sudoku(input));
+        assert_eq!(true, Solution::is_valid_sudoku(&input));
+    }
+
+    #[test]
+    fn given_complete_valid_board_returns_true() {
+        let input = vec![
+            vec!['8', '2', '7', '1', '5', '4', '3', '9', '6'],
+            vec!['9', '6', '5', '3', '2', '7', '1', '4', '8'],
+            vec!['3', '4', '1', '6', '8', '9', '7', '5', '2'],
+            vec!['5', '9', '3', '4', '6', '8', '2', '7', '1'],
+            vec!['4', '7', '2', '5', '1', '3', '6', '8', '9'],
+            vec!['6', '1', '8', '9', '7', '2', '4', '3', '5'],
+            vec!['7', '8', '6', '2', '3', '5', '9', '1', '4'],
+            vec!['1', '5', '4', '7', '9', '6', '8', '2', '3'],
+            vec!['2', '3', '9', '8', '4', '1', '5', '6', '7'],
+        ];
+
+        assert_eq!(true, Solution::is_valid_sudoku(&input));
     }
 
     #[test]
@@ -88,7 +105,7 @@ mod tests {
             vec!['.', '.', '.', '.', '8', '.', '.', '7', '9'],
         ];
 
-        assert_eq!(false, Solution::is_valid_sudoku(input));
+        assert_eq!(false, Solution::is_valid_sudoku(&input));
     }
 
     #[test]
@@ -105,7 +122,7 @@ mod tests {
             vec!['.', '3', '.', '.', '.', '.', '.', '7', '9'],
         ];
 
-        assert_eq!(false, Solution::is_valid_sudoku(input));
+        assert_eq!(false, Solution::is_valid_sudoku(&input));
     }
 
     #[test]
@@ -122,6 +139,6 @@ mod tests {
             vec!['.', '.', '.', '.', '.', '.', '.', '.', '2'],
         ];
 
-        assert_eq!(false, Solution::is_valid_sudoku(input));
+        assert_eq!(false, Solution::is_valid_sudoku(&input));
     }
 }

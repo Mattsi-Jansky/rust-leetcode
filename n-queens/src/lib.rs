@@ -47,7 +47,20 @@ fn add_next_possibilities(board: Vec<Option<usize>>, frontline: &mut Vec<Vec<Opt
 }
 
 fn is_valid(board: &Vec<Option<usize>>) -> bool {
-    todo!()
+    let mut result = true;
+
+    for x in 0..board.len() {
+        if x == board.len()-1 || matches!(board[x+1], None) {
+            let y = board[x].unwrap();
+            if board.iter().filter(|yy| yy == &&Some(y)).count() > 1 {
+                result = false;
+            }
+
+            break;
+        }
+    }
+
+    result
 }
 
 #[cfg(test)]
@@ -105,5 +118,16 @@ mod tests {
             vec![Some(0),Some(2),None,None],
             vec![Some(0),Some(3),None,None]
         ])
+    }
+
+    #[test]
+    fn given_same_x_value_is_valid_returns_false() {
+        let mut board = vec![None; 4];
+        board[0] = Some(0);
+        board[1] = Some(0);
+
+        let result = is_valid(&board);
+
+        assert_eq!(false, result)
     }
 }

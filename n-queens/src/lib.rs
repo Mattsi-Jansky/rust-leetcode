@@ -20,7 +20,7 @@ impl Solution {
             if incomplete(&board) {
                 add_next_possibilities(board, &mut frontline);
             }
-            else if is_valid(board) { result.push(vec![String::from("Solution")]) }
+            else { result.push(vec![String::from("Solution")]) }
         }
 
         result
@@ -32,10 +32,21 @@ fn incomplete(board: &Vec<Option<usize>>) -> bool {
 }
 
 fn add_next_possibilities(board: Vec<Option<usize>>, frontline: &mut Vec<Vec<Option<usize>>>) {
-    todo!()
+    for i in 0..board.len() {
+        if let Some(_) = board[i] { continue; }
+        else {
+            for j in 0..board.len() {
+                let mut new_board = board.clone();
+                new_board[i] = Some(j);
+                if is_valid(&new_board) {
+                    frontline.push(new_board);
+                }
+            }
+        }
+    }
 }
 
-fn is_valid(board: Vec<Option<usize>>) -> bool {
+fn is_valid(board: &Vec<Option<usize>>) -> bool {
     todo!()
 }
 
@@ -43,22 +54,24 @@ fn is_valid(board: Vec<Option<usize>>) -> bool {
 mod tests {
     use super::*;
     
-    // #[test]
-    // fn given_n_1_should_return_single_cell_with_queen() {
-    //     let result = Solution::solve_n_queens(1);
-    //
-    //     assert_eq!(result, vec![vec!["Q"]])
-    // }
-    //
-    // #[test]
-    // fn given_n_4() {
-    //     let result = Solution::solve_n_queens(4);
-    //
-    //     assert_eq!(result, vec![
-    //         [".Q..","...Q","Q...","..Q."],
-    //         ["..Q.","Q...","...Q",".Q.."]
-    //     ])
-    // }
+    #[test]
+    #[ignore]
+    fn given_n_1_should_return_single_cell_with_queen() {
+        let result = Solution::solve_n_queens(1);
+
+        assert_eq!(result, vec![vec!["Q"]])
+    }
+
+    #[test]
+    #[ignore]
+    fn given_n_4() {
+        let result = Solution::solve_n_queens(4);
+
+        assert_eq!(result, vec![
+            [".Q..","...Q","Q...","..Q."],
+            ["..Q.","Q...","...Q",".Q.."]
+        ])
+    }
 
     #[test]
     fn incomplete_returns_true_given_board_with_none() {
@@ -77,5 +90,20 @@ mod tests {
         let result = incomplete(&board);
 
         assert_eq!(false, result);
+    }
+
+    #[test]
+    #[ignore]
+    fn add_next_possibilities_adds_next_possible_steps() {
+        let mut board = vec![None; 4];
+        board[0] = Some(0);
+        let mut frontline = vec![];
+
+        let result = add_next_possibilities(board, &mut frontline);
+
+        assert_eq!(frontline, vec![
+            vec![Some(0),Some(2),None,None],
+            vec![Some(0),Some(3),None,None]
+        ])
     }
 }

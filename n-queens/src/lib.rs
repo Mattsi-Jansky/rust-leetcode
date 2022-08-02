@@ -46,6 +46,7 @@ fn add_next_possibilities(board: Vec<Option<usize>>, frontline: &mut Vec<Vec<Opt
                     frontline.push(new_board);
                 }
             }
+            break;
         }
     }
 }
@@ -107,7 +108,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn given_n_4() {
         let result = Solution::solve_n_queens(4);
 
@@ -137,7 +137,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn add_next_possibilities_adds_next_possible_steps() {
         let mut board = vec![None; 4];
         board[0] = Some(0);

@@ -18,7 +18,6 @@ impl Solution {
         while !frontline.is_empty() {
             let board = frontline.pop().unwrap();
             if incomplete(&board) {
-                println!("Is incomplete: ${:?}", board);
                 add_next_possibilities(board, &mut frontline);
             }
             else {

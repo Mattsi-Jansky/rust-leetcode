@@ -10,7 +10,7 @@ impl Solution {
         let mut frontline = vec![];
 
         for i in 0..n {
-            let mut board = vec![None; 9];
+            let mut board = vec![None; n];
             board[0] = Some(i);
             frontline.push(board);
         }
@@ -18,9 +18,13 @@ impl Solution {
         while !frontline.is_empty() {
             let board = frontline.pop().unwrap();
             if incomplete(&board) {
+                println!("Is incomplete: ${:?}", board);
                 add_next_possibilities(board, &mut frontline);
             }
-            else { result.push(vec![String::from("Solution")]) }
+            else {
+                let valid_result = serialise_board(board, n);
+                result.push(valid_result)
+            }
         }
 
         result
@@ -77,12 +81,25 @@ fn is_valid(board: &[Option<usize>]) -> bool {
     result
 }
 
+fn serialise_board(board: Vec<Option<usize>>, n: usize) -> Vec<String> {
+    let mut valid_result = vec![];
+    for _ in 0..n {
+        valid_result.push((0..board.len()).fold(String::new(), |s,_| s + "."));
+    }
+
+    for (y, x) in board.iter().map(|x| x.unwrap()).enumerate() {
+        valid_result.get_mut(x).unwrap()
+            .replace_range(y..y+1, "Q");
+    }
+
+    valid_result
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
-    #[ignore]
     fn given_n_1_should_return_single_cell_with_queen() {
         let result = Solution::solve_n_queens(1);
 
@@ -154,5 +171,23 @@ mod tests {
         let result = is_valid(&board);
 
         assert_eq!(false, result)
+    }
+
+    #[test]
+    fn should_serialise_board() {
+        let mut board = vec![None; 4];
+        board[0] = Some(2);
+        board[1] = Some(0);
+        board[2] = Some(3);
+        board[3] = Some(1);
+
+        let result = serialise_board(board, 4);
+
+        assert_eq!(vec![
+            ".Q..",
+            "...Q",
+            "Q...",
+            "..Q."
+        ], result);
     }
 }

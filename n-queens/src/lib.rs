@@ -56,6 +56,20 @@ fn is_valid(board: &[Option<usize>]) -> bool {
                 result = false;
             }
 
+            let mut diagonals = vec![];
+            for i in 1..board.len() {
+                if x >= i && y >= i { diagonals.push((x-i,y-i)) }
+                if x < board.len() - i && y < board.len() - i { diagonals.push((x+i,y+i)) }
+                if x < board.len() - i && y >= i { diagonals.push((x+i,y-i)) }
+                if x >= i && y < board.len() - i { diagonals.push((x-i,y+i)) }
+            }
+
+            for (x,y) in diagonals {
+                if board[x] == Some(y) {
+                    result = false;
+                }
+            }
+
             break;
         }
     }
@@ -98,7 +112,7 @@ mod tests {
 
     #[test]
     fn incomplete_returns_false_given_board_with_no_none() {
-        let mut board = vec![Some(1); 4];
+        let board = vec![Some(1); 4];
 
         let result = incomplete(&board);
 
@@ -112,7 +126,7 @@ mod tests {
         board[0] = Some(0);
         let mut frontline = vec![];
 
-        let result = add_next_possibilities(board, &mut frontline);
+        add_next_possibilities(board, &mut frontline);
 
         assert_eq!(frontline, vec![
             vec![Some(0),Some(2),None,None],
@@ -121,10 +135,21 @@ mod tests {
     }
 
     #[test]
-    fn given_same_x_value_is_valid_returns_false() {
+    fn given_same_y_value_is_valid_returns_false() {
         let mut board = vec![None; 4];
         board[0] = Some(0);
         board[1] = Some(0);
+
+        let result = is_valid(&board);
+
+        assert_eq!(false, result)
+    }
+
+    #[test]
+    fn given_diagonal_collision_is_valid_returns_false() {
+        let mut board = vec![None; 4];
+        board[0] = Some(0);
+        board[1] = Some(1);
 
         let result = is_valid(&board);
 

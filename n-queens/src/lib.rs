@@ -27,13 +27,13 @@ impl Solution {
     }
 }
 
-fn incomplete(board: &Vec<Option<usize>>) -> bool {
+fn incomplete(board: &[Option<usize>]) -> bool {
     board.iter().any(|&b| matches!(b, None))
 }
 
 fn add_next_possibilities(board: Vec<Option<usize>>, frontline: &mut Vec<Vec<Option<usize>>>) {
     for i in 0..board.len() {
-        if let Some(_) = board[i] { continue; }
+        if board[i].is_some() { continue; }
         else {
             for j in 0..board.len() {
                 let mut new_board = board.clone();
@@ -46,7 +46,7 @@ fn add_next_possibilities(board: Vec<Option<usize>>, frontline: &mut Vec<Vec<Opt
     }
 }
 
-fn is_valid(board: &Vec<Option<usize>>) -> bool {
+fn is_valid(board: &[Option<usize>]) -> bool {
     let mut result = true;
 
     for x in 0..board.len() {

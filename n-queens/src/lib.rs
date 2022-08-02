@@ -60,15 +60,7 @@ fn is_valid(board: &[Option<usize>]) -> bool {
                 result = false;
             }
 
-            let mut diagonals = vec![];
-            for i in 1..board.len() {
-                if x >= i && y >= i { diagonals.push((x-i,y-i)) }
-                if x < board.len() - i && y < board.len() - i { diagonals.push((x+i,y+i)) }
-                if x < board.len() - i && y >= i { diagonals.push((x+i,y-i)) }
-                if x >= i && y < board.len() - i { diagonals.push((x-i,y+i)) }
-            }
-
-            for (x,y) in diagonals {
+            for (x,y) in diagonals(board, x, y) {
                 if board[x] == Some(y) {
                     result = false;
                 }
@@ -79,6 +71,17 @@ fn is_valid(board: &[Option<usize>]) -> bool {
     }
 
     result
+}
+
+fn diagonals(board: &[Option<usize>], x: usize, y: usize) -> Vec<(usize, usize)> {
+    let mut diagonals = vec![];
+    for i in 1..board.len() {
+        if x >= i && y >= i { diagonals.push((x - i, y - i)) }
+        if x < board.len() - i && y < board.len() - i { diagonals.push((x + i, y + i)) }
+        if x < board.len() - i && y >= i { diagonals.push((x + i, y - i)) }
+        if x >= i && y < board.len() - i { diagonals.push((x - i, y + i)) }
+    }
+    diagonals
 }
 
 fn serialise_board(board: Vec<Option<usize>>, n: usize) -> Vec<String> {

@@ -34,14 +34,16 @@ fn incomplete(board: &[Option<u8>]) -> bool {
 }
 
 fn add_next_possibilities(board: Vec<Option<u8>>, frontline: &mut Vec<Vec<Option<u8>>>) {
-    for i in 0..board.len() {
-        if board[i].is_some() { continue; }
+    for x in 0..board.len() {
+        if board[x].is_some() { continue; }
         else {
-            for j in 0..board.len() {
-                let mut new_board = board.clone();
-                new_board[i] = Some(j as u8);
-                if is_valid(&new_board) {
-                    frontline.push(new_board);
+            for y in 0..board.len() {
+                if board.iter().filter(|yy| yy  == &&Some(y as u8)).count() == 0 {
+                    let mut new_board = board.clone();
+                    new_board[x] = Some(y as u8);
+                    if is_valid(&new_board) {
+                        frontline.push(new_board);
+                    }
                 }
             }
             break;
@@ -55,12 +57,8 @@ fn is_valid(board: &[Option<u8>]) -> bool {
     for x in 0..board.len() {
         if x == board.len()-1 || matches!(board[x+1], None) {
             let y = board[x].unwrap();
-            if board.iter().filter(|yy| yy == &&Some(y)).count() > 1 {
-                result = false;
-                break;
-            }
 
-            for (x,y) in diagonals(board, x as u8, y) {
+            for (x,y) in diagonals(board, x as u8, y, (x as u8) + 1) {
                 if board[x as usize] == Some(y) {
                     result = false;
                     break;
@@ -74,12 +72,12 @@ fn is_valid(board: &[Option<u8>]) -> bool {
     result
 }
 
-fn diagonals(board: &[Option<u8>], x: u8, y: u8) -> Vec<(u8, u8)> {
+fn diagonals(board: &[Option<u8>], x: u8, y: u8, current_len: u8) -> Vec<(u8, u8)> {
     let mut diagonals = vec![];
-    let len = board.len() as u8;
-    for i in 1..(board.len() as u8) {
+    let total_len = board.len() as u8;
+    for i in 1..current_len {
         if x >= i && y >= i { diagonals.push((x - i, y - i)) }
-        if x >= i && y < len - i { diagonals.push((x - i, y + i)) }
+        if x >= i && y < total_len - i { diagonals.push((x - i, y + i)) }
     }
     diagonals
 }

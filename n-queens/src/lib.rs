@@ -4,12 +4,12 @@ impl Solution {
     // Signiature should use char (or even bool?) but it is defined by leetcode, can't change it.
     // Also, `n` should probably be `usize`.
     pub fn solve_n_queens(n: i32) -> Vec<Vec<String>> {
-        let n = n as usize;
+        let n = n as u8;
         let mut result = vec![];
         let mut frontline = vec![];
 
         for i in 0..n {
-            let mut board = vec![None; n];
+            let mut board = vec![None; n as usize];
             board[0] = Some(i);
             frontline.push(board);
         }
@@ -29,17 +29,17 @@ impl Solution {
     }
 }
 
-fn incomplete(board: &[Option<usize>]) -> bool {
+fn incomplete(board: &[Option<u8>]) -> bool {
     board.iter().any(|&b| matches!(b, None))
 }
 
-fn add_next_possibilities(board: Vec<Option<usize>>, frontline: &mut Vec<Vec<Option<usize>>>) {
+fn add_next_possibilities(board: Vec<Option<u8>>, frontline: &mut Vec<Vec<Option<u8>>>) {
     for i in 0..board.len() {
         if board[i].is_some() { continue; }
         else {
             for j in 0..board.len() {
                 let mut new_board = board.clone();
-                new_board[i] = Some(j);
+                new_board[i] = Some(j as u8);
                 if is_valid(&new_board) {
                     frontline.push(new_board);
                 }
@@ -49,7 +49,7 @@ fn add_next_possibilities(board: Vec<Option<usize>>, frontline: &mut Vec<Vec<Opt
     }
 }
 
-fn is_valid(board: &[Option<usize>]) -> bool {
+fn is_valid(board: &[Option<u8>]) -> bool {
     let mut result = true;
 
     for x in 0..board.len() {
@@ -60,8 +60,8 @@ fn is_valid(board: &[Option<usize>]) -> bool {
                 break;
             }
 
-            for (x,y) in diagonals(board, x, y) {
-                if board[x] == Some(y) {
+            for (x,y) in diagonals(board, x as u8, y) {
+                if board[x as usize] == Some(y) {
                     result = false;
                     break;
                 }
@@ -74,25 +74,26 @@ fn is_valid(board: &[Option<usize>]) -> bool {
     result
 }
 
-fn diagonals(board: &[Option<usize>], x: usize, y: usize) -> Vec<(usize, usize)> {
+fn diagonals(board: &[Option<u8>], x: u8, y: u8) -> Vec<(u8, u8)> {
     let mut diagonals = vec![];
-    for i in 1..board.len() {
+    let len = board.len() as u8;
+    for i in 1..(board.len() as u8) {
         if x >= i && y >= i { diagonals.push((x - i, y - i)) }
-        if x < board.len() - i && y < board.len() - i { diagonals.push((x + i, y + i)) }
-        if x < board.len() - i && y >= i { diagonals.push((x + i, y - i)) }
-        if x >= i && y < board.len() - i { diagonals.push((x - i, y + i)) }
+        if x < len - i && y < len - i { diagonals.push((x + i, y + i)) }
+        if x < len - i && y >= i { diagonals.push((x + i, y - i)) }
+        if x >= i && y < len - i { diagonals.push((x - i, y + i)) }
     }
     diagonals
 }
 
-fn serialise_board(board: Vec<Option<usize>>, n: usize) -> Vec<String> {
+fn serialise_board(board: Vec<Option<u8>>, n: u8) -> Vec<String> {
     let mut valid_result = vec![];
     for _ in 0..n {
         valid_result.push((0..board.len()).fold(String::new(), |s,_| s + "."));
     }
 
     for (y, x) in board.iter().map(|x| x.unwrap()).enumerate() {
-        valid_result.get_mut(x).unwrap()
+        valid_result.get_mut(x as usize).unwrap()
             .replace_range(y..y+1, "Q");
     }
 

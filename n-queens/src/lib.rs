@@ -1,12 +1,11 @@
 pub struct Solution {}
 
 impl Solution {
-    // Signiature should use char but it is defined by leetcode, can't change it.
+    // Signiature should use char (or even bool?) but it is defined by leetcode, can't change it.
     // Also, `n` should probably be `usize`.
     pub fn solve_n_queens(n: i32) -> Vec<Vec<String>> {
         let n = n as usize;
         let mut result = vec![];
-
         let mut frontline = vec![];
 
         for i in 0..n {
@@ -58,11 +57,13 @@ fn is_valid(board: &[Option<usize>]) -> bool {
             let y = board[x].unwrap();
             if board.iter().filter(|yy| yy == &&Some(y)).count() > 1 {
                 result = false;
+                break;
             }
 
             for (x,y) in diagonals(board, x, y) {
                 if board[x] == Some(y) {
                     result = false;
+                    break;
                 }
             }
 

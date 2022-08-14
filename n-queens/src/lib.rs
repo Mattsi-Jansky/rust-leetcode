@@ -37,13 +37,13 @@ fn add_next_possibilities(board: Vec<Option<u8>>, frontline: &mut Vec<Vec<Option
     for x in 0..board.len() {
         if board[x].is_some() { continue; }
         else {
-            for y in 0..board.len() {
-                if board.iter().filter(|yy| yy  == &&Some(y as u8)).count() == 0 {
+            for y in 0..(board.len() as u8) {
+                if no_horizontal_collisions(&board, &y)
+                    && no_diagonal_collisions(&board, &(x as u8), &y)
+                {
                     let mut new_board = board.clone();
-                    new_board[x] = Some(y as u8);
-                    if is_valid(&new_board) {
-                        frontline.push(new_board);
-                    }
+                    new_board[x] = Some(y);
+                    frontline.push(new_board);
                 }
             }
             break;
@@ -51,20 +51,16 @@ fn add_next_possibilities(board: Vec<Option<u8>>, frontline: &mut Vec<Vec<Option
     }
 }
 
-fn is_valid(board: &[Option<u8>]) -> bool {
+fn no_horizontal_collisions(board: &Vec<Option<u8>>, y: &u8) -> bool {
+    board.iter().filter(|yy| yy == &&Some(*y)).count() == 0
+}
+
+fn no_diagonal_collisions(board: &Vec<Option<u8>>, x: &u8, y: &u8) -> bool {
     let mut result = true;
 
-    for x in 0..board.len() {
-        if x == board.len()-1 || matches!(board[x+1], None) {
-            let y = board[x].unwrap();
-
-            for (x,y) in diagonals(board, x as u8, y, (x as u8) + 1) {
-                if board[x as usize] == Some(y) {
-                    result = false;
-                    break;
-                }
-            }
-
+    for (x,y) in diagonals(board, *x, *y, *x + 1) {
+        if board[x as usize] == Some(y) {
+            result = false;
             break;
         }
     }
@@ -148,28 +144,6 @@ mod tests {
             vec![Some(0),Some(2),None,None],
             vec![Some(0),Some(3),None,None]
         ])
-    }
-
-    #[test]
-    fn given_same_y_value_is_valid_returns_false() {
-        let mut board = vec![None; 4];
-        board[0] = Some(0);
-        board[1] = Some(0);
-
-        let result = is_valid(&board);
-
-        assert_eq!(false, result)
-    }
-
-    #[test]
-    fn given_diagonal_collision_is_valid_returns_false() {
-        let mut board = vec![None; 4];
-        board[0] = Some(0);
-        board[1] = Some(1);
-
-        let result = is_valid(&board);
-
-        assert_eq!(false, result)
     }
 
     #[test]

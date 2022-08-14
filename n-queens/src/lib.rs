@@ -79,8 +79,6 @@ fn diagonals(board: &[Option<u8>], x: u8, y: u8) -> Vec<(u8, u8)> {
     let len = board.len() as u8;
     for i in 1..(board.len() as u8) {
         if x >= i && y >= i { diagonals.push((x - i, y - i)) }
-        if x < len - i && y < len - i { diagonals.push((x + i, y + i)) }
-        if x < len - i && y >= i { diagonals.push((x + i, y - i)) }
         if x >= i && y < len - i { diagonals.push((x - i, y + i)) }
     }
     diagonals
